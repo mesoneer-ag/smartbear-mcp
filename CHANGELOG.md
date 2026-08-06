@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- [QTM4J] New `get_test_case_folders` and `get_test_cycle_folders` tools expose the project's folder trees, so the numeric `folderId` the other QTM4J tools need can be looked up instead of only being supplied by the user. Both accept optional `sort` and `withCount` and take the project from the active project context.
+
 ## [0.41.3] - 2026-09-30
 
 ### Added

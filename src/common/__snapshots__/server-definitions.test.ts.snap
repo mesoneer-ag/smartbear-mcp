@@ -8902,7 +8902,7 @@ Expected Output: description updated only. Field IDs auto-resolved from project 
 **Parameters:**
 - summary (string) *required*: Test case summary/title
 - description (string): Test case description
-- folderId (number): Numeric folder ID where the test case will be created. If omitted, the test case is created in the 'MCP Generated' folder automatically.
+- folderId (number): Numeric ID of the folder to place the test case in — never a folder name. Look it up with get_test_case_folders, or get it from the user (right-click the folder in QTM4J → 'Copy Folder Id'). Defaults to the 'MCP Generated' folder when omitted.
 - priority (string): Priority name (e.g., 'High', 'Medium', 'Low'). Auto-resolved to ID.
 - status (string): Status name (e.g., 'To Do', 'In Progress', 'Done'). Auto-resolved to ID.
 - assignee (string): Assignee account ID
@@ -8971,7 +8971,7 @@ Expected Output: Test case created with resolved priority and status IDs
 \`\`\`
 Expected Output: Test case created with resolved labels/components/priority/status and 3 steps
 
-**Hints:** 1. PREREQUISITE: set_project_context must be called before this tool. NEVER auto-select a project. 2. Priority and status values were returned by set_project_context. Use NLP to map user input (e.g., 'Major' → 'High', 'Critical' → 'Blocker'). 3. If priority or status name is not found, the operation proceeds without that field and a warning is returned. 4. Labels and components are resolved on demand. If a name is not found, it is skipped with a warning. 5. Steps: ALWAYS include all three fields — stepDetails, testData, and expectedResult. Generate reasonable values if not provided. 6. FOLDER ID: folderId is optional. If omitted, defaults to the 'MCP Generated' folder. To place in a specific folder, ask the user to right-click the target folder in QTM4J and select 'Copy Folder Id' — never try to look it up.",
+**Hints:** 1. PREREQUISITE: set_project_context must be called before this tool. NEVER auto-select a project. 2. Priority and status values were returned by set_project_context. Use NLP to map user input (e.g., 'Major' → 'High', 'Critical' → 'Blocker'). 3. If priority or status name is not found, the operation proceeds without that field and a warning is returned. 4. Labels and components are resolved on demand. If a name is not found, it is skipped with a warning. 5. Steps: ALWAYS include all three fields — stepDetails, testData, and expectedResult. Generate reasonable values if not provided. 6. folderId is optional and must be the numeric folder ID — never a folder name. When the user names a folder in words, resolve it with get_test_case_folders and confirm the match if several folders share that name; alternatively ask the user for the ID directly (right-click the target folder in QTM4J → 'Copy Folder Id'). Never guess it. When omitted, the test case is created in the 'MCP Generated' folder.",
     "inputSchema": [
       "assignee",
       "components",
@@ -9009,7 +9009,7 @@ Expected Output: Test case created with resolved labels/components/priority/stat
 - description (string): Detailed description of the test cycle. Max 65 535 characters.
 - priority (string): Priority name (e.g., 'High', 'Medium', 'Low'). Auto-resolved to ID.
 - status (string): Status name (e.g., 'To Do', 'In Progress', 'Done'). Auto-resolved to ID.
-- folderId (number): Numeric folder ID where the test cycle will be created. If omitted, the cycle is created in the 'MCP Generated' folder automatically.
+- folderId (number): Numeric ID of the folder to place the test cycle in — never a folder name. Look it up with get_test_cycle_folders, or get it from the user (right-click the folder in QTM4J → 'Copy Folder Id'). Defaults to the 'MCP Generated' folder when omitted.
 - assignee (string): Assignee account ID
 - reporter (string): Reporter account ID
 - labels (array): List of label names (e.g., ['Release_1', 'Sprint 1']). Auto-resolved to IDs.
@@ -9051,7 +9051,7 @@ Expected Output: Test cycle created with key 'SCRUM-TR-xxx'
 \`\`\`
 Expected Output: Test cycle created with resolved priority, status, labels, and components
 
-**Hints:** 1. PREREQUISITE: set_project_context must be called before this tool. NEVER auto-select a project. 2. If any priority, status, label, or component name cannot be resolved, the cycle is still created but a warning is returned. Suggest the closest available value from the set_project_context response and ask the user to confirm before retrying. 3. FOLDER ID: folderId is optional. If omitted, defaults to the 'MCP Generated' folder. To place in a specific folder, ask the user to right-click the target folder in QTM4J and select 'Copy Folder Id' — never try to look it up. 4. Date format: 'dd/MMM/yyyy HH:mm' e.g. '10/May/2026 00:00'. Month must be capitalised. plannedStartDate must be ≤ plannedEndDate.",
+**Hints:** 1. PREREQUISITE: set_project_context must be called before this tool. NEVER auto-select a project. 2. If any priority, status, label, or component name cannot be resolved, the cycle is still created but a warning is returned. Suggest the closest available value from the set_project_context response and ask the user to confirm before retrying. 3. folderId is optional and must be the numeric folder ID — never a folder name. When the user names a folder in words, resolve it with get_test_cycle_folders and confirm the match if several folders share that name; alternatively ask the user for the ID directly (right-click the target folder in QTM4J → 'Copy Folder Id'). Never guess it. When omitted, the cycle is created in the 'MCP Generated' folder. 4. Date format: 'dd/MMM/yyyy HH:mm' e.g. '10/May/2026 00:00'. Month must be capitalised. plannedStartDate must be ≤ plannedEndDate.",
     "inputSchema": [
       "assignee",
       "components",
@@ -9579,6 +9579,114 @@ Expected Output: QMetry-enabled projects containing 'TEST' in their project keys
       "total",
     ],
     "title": "QTM4J: Get Projects",
+  },
+  "qtm4j_get_test_case_folders": {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "QTM4J: Get Test Case Folders",
+    },
+    "description": "Get the test case folder tree of the active QTM4J project, including each folder's numeric folderId. Use it to look up the folderId needed by the test case tools.
+
+**Toolset:** Test Cases
+
+**Parameters:**
+- sort (string): Sort pattern sent as a URL query param. Format: 'field:order'. Sortable fields: NAME, CREATED_ON, UPDATED_ON. Order values: 'asc' or 'desc'. Example: 'NAME:asc'. Omit to keep the folder order configured in QTM4J (seqNo).
+- withCount (boolean): Set to true to include the number of items in each folder: selfCount (directly in the folder) and totalCount (including all subfolders). Omit when only IDs and names are needed.
+
+**Output Description:** JSON object with total (number of root-level folders) and data (array of root folders). Each folder has id, name, seqNo, created, updated, and children (nested folders of the same shape). selfCount and totalCount are only present when withCount is true.
+
+**Use Cases:** 1. Find the numeric folderId of a test case folder the user referred to by name 2. Show the user which test case folders exist before creating a test case 3. Confirm that a folder path (e.g. 'Regression / Sprint 42') exists in the project 4. Get folder IDs to use in the folders filter of search_test_cases 5. Get a folder ID to narrow the test cases picked up by the link tools 6. See how many test cases each folder holds
+
+**Examples:**
+1. Get the full test case folder tree
+\`\`\`json
+{}
+\`\`\`
+Expected Output: Root-level test case folders with their ids, names, and nested children
+
+2. Get the folder tree with test case counts per folder
+\`\`\`json
+{
+  "withCount": true
+}
+\`\`\`
+Expected Output: Folder tree where each folder also has selfCount and totalCount
+
+3. Get the folder tree sorted alphabetically
+\`\`\`json
+{
+  "sort": "NAME:asc"
+}
+\`\`\`
+Expected Output: Folder tree ordered by folder name ascending
+
+**Hints:** 1. PREREQUISITE: set_project_context must be called before this tool. NEVER auto-select a project. 2. projectId is injected automatically from the active project context — do not ask the user for it. 3. The response is a tree: root folders are in \`data\`, subfolders are nested under each folder's \`children\` array. Walk \`children\` recursively to find deeper folders. 4. FOLDER NAMES ARE NOT UNIQUE: the same name can appear in several branches. When more than one folder matches the name the user gave, list the candidates with their parent folders and ask which one they mean — never pick one silently. 5. Pass the \`id\` of the chosen folder as \`folderId\` to create_test_case, in the \`folders\` filter of search_test_cases, or in the \`folderId\` filter of the test case link tools. 6. This tool returns test case folders only. Test cycle folders are a separate tree — use get_test_cycle_folders for those.",
+    "inputSchema": [
+      "sort",
+      "withCount",
+    ],
+    "outputSchema": [
+      "data",
+      "total",
+    ],
+    "title": "QTM4J: Get Test Case Folders",
+  },
+  "qtm4j_get_test_cycle_folders": {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "QTM4J: Get Test Cycle Folders",
+    },
+    "description": "Get the test cycle folder tree of the active QTM4J project, including each folder's numeric folderId. Use it to look up the folderId needed by the test cycle tools.
+
+**Toolset:** Test Cycles
+
+**Parameters:**
+- sort (string): Sort pattern sent as a URL query param. Format: 'field:order'. Sortable fields: NAME, CREATED_ON, UPDATED_ON. Order values: 'asc' or 'desc'. Example: 'NAME:asc'. Omit to keep the folder order configured in QTM4J (seqNo).
+- withCount (boolean): Set to true to include the number of items in each folder: selfCount (directly in the folder) and totalCount (including all subfolders). Omit when only IDs and names are needed.
+
+**Output Description:** JSON object with total (number of root-level folders) and data (array of root folders). Each folder has id, name, seqNo, created, updated, and children (nested folders of the same shape). selfCount and totalCount are only present when withCount is true.
+
+**Use Cases:** 1. Find the numeric folderId of a test cycle folder the user referred to by name 2. Show the user which test cycle folders exist before creating a test cycle 3. Confirm that a folder path (e.g. 'Releases / 2026') exists in the project 4. Get a folderId to use in the search_test_cycles filter 5. See how many test cycles each folder holds
+
+**Examples:**
+1. Get the full test cycle folder tree
+\`\`\`json
+{}
+\`\`\`
+Expected Output: Root-level test cycle folders with their ids, names, and nested children
+
+2. Get the folder tree with test cycle counts per folder
+\`\`\`json
+{
+  "withCount": true
+}
+\`\`\`
+Expected Output: Folder tree where each folder also has selfCount and totalCount
+
+3. Get the folder tree sorted alphabetically
+\`\`\`json
+{
+  "sort": "NAME:asc"
+}
+\`\`\`
+Expected Output: Folder tree ordered by folder name ascending
+
+**Hints:** 1. PREREQUISITE: set_project_context must be called before this tool. NEVER auto-select a project. 2. projectId is injected automatically from the active project context — do not ask the user for it. 3. The response is a tree: root folders are in \`data\`, subfolders are nested under each folder's \`children\` array. Walk \`children\` recursively to find deeper folders. 4. FOLDER NAMES ARE NOT UNIQUE: the same name can appear in several branches. When more than one folder matches the name the user gave, list the candidates with their parent folders and ask which one they mean — never pick one silently. 5. Pass the \`id\` of the chosen folder as \`folderId\` to create_test_cycle or in the search_test_cycles filter. 6. This tool returns test cycle folders only. Test case folders are a separate tree — use get_test_case_folders for those.",
+    "inputSchema": [
+      "sort",
+      "withCount",
+    ],
+    "outputSchema": [
+      "data",
+      "total",
+    ],
+    "title": "QTM4J: Get Test Cycle Folders",
   },
   "qtm4j_get_test_steps": {
     "annotations": {
@@ -10759,7 +10867,7 @@ Expected Output: High-priority cycles updated in May 2026 reported by that user
 \`\`\`
 Expected Output: Test cycles matching all specified filters with selected fields
 
-**Hints:** 1. PREREQUISITE: set_project_context must be called before this tool. NEVER auto-select a project. 2. SUPPORTED FILTER FIELDS: status, priority, assignee, reporter, folderId, labels, components, plannedStartDate, plannedEndDate, searchText, createdOn, updatedOn, isAutomated, aiGenerated. Do NOT use any other filter field names. 3. DATE FILTERS: createdOn = creation date; updatedOn = last-updated date; plannedStartDate / plannedEndDate = planned execution window. Format: 'dd/MMM/yyyy,dd/MMM/yyyy' e.g. '01/May/2026,21/May/2026'. Month is case-sensitive. 'Created last week' → createdOn, NOT plannedStartDate. 4. FIELDS: Pass as an array to select what to return. plannedStartDate and plannedEndDate are NOT in the default response — include them explicitly. Available: key, summary, description, status, priority, assignee, reporter, isAutomated, plannedStartDate, plannedEndDate, labels, components, fixVersions, sprint, defectCount, estimatedTime, actualTime, created, updated. 5. REQUEST STRUCTURE: filter → request body; fields, sort, startAt, maxResults → URL query params. 6. SORT: Allowed fields: key, summary, status, plannedStartDate, plannedEndDate, defectCount. Format: 'fieldName:asc' or 'fieldName:desc' e.g. 'plannedStartDate:asc'. 7. FOLDER ID: folderId in fields.testCycle and fields.testCase is a numeric ID. Tell the user they can get it by right-clicking the target folder in QTM4J and selecting 'Copy Folder Id'. Always ask the user for the numeric ID directly — never try to look it up.",
+**Hints:** 1. PREREQUISITE: set_project_context must be called before this tool. NEVER auto-select a project. 2. SUPPORTED FILTER FIELDS: status, priority, assignee, reporter, folderId, labels, components, plannedStartDate, plannedEndDate, searchText, createdOn, updatedOn, isAutomated, aiGenerated. Do NOT use any other filter field names. 3. DATE FILTERS: createdOn = creation date; updatedOn = last-updated date; plannedStartDate / plannedEndDate = planned execution window. Format: 'dd/MMM/yyyy,dd/MMM/yyyy' e.g. '01/May/2026,21/May/2026'. Month is case-sensitive. 'Created last week' → createdOn, NOT plannedStartDate. 4. FIELDS: Pass as an array to select what to return. plannedStartDate and plannedEndDate are NOT in the default response — include them explicitly. Available: key, summary, description, status, priority, assignee, reporter, isAutomated, plannedStartDate, plannedEndDate, labels, components, fixVersions, sprint, defectCount, estimatedTime, actualTime, created, updated. 5. REQUEST STRUCTURE: filter → request body; fields, sort, startAt, maxResults → URL query params. 6. SORT: Allowed fields: key, summary, status, plannedStartDate, plannedEndDate, defectCount. Format: 'fieldName:asc' or 'fieldName:desc' e.g. 'plannedStartDate:asc'. 7. FOLDER ID: filter.folderId is a numeric ID. Resolve a folder the user names in words with get_test_cycle_folders, or ask the user for the ID directly (right-click the target folder in QTM4J → 'Copy Folder Id'). Never guess it.",
     "inputSchema": [
       "fields",
       "filter",

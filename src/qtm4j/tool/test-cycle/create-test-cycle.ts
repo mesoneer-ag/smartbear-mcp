@@ -86,7 +86,10 @@ export class CreateTestCycle extends Tool<Qtm4jClient> {
     hints: [
       "PREREQUISITE: set_project_context must be called before this tool. NEVER auto-select a project.",
       "If any priority, status, label, or component name cannot be resolved, the cycle is still created but a warning is returned. Suggest the closest available value from the set_project_context response and ask the user to confirm before retrying.",
-      "FOLDER ID: folderId is optional. If omitted, defaults to the 'MCP Generated' folder. To place in a specific folder, ask the user to right-click the target folder in QTM4J and select 'Copy Folder Id' — never try to look it up.",
+      "folderId is optional and must be the numeric folder ID — never a folder name. When the user names a folder in words, " +
+        "resolve it with get_test_cycle_folders and confirm the match if several folders share that name; alternatively ask the user " +
+        "for the ID directly (right-click the target folder in QTM4J → 'Copy Folder Id'). Never guess it. " +
+        "When omitted, the cycle is created in the 'MCP Generated' folder.",
       "Date format: 'dd/MMM/yyyy HH:mm' e.g. '10/May/2026 00:00'. Month must be capitalised. plannedStartDate must be ≤ plannedEndDate.",
     ],
     outputDescription:

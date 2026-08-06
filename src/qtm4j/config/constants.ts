@@ -107,6 +107,14 @@ export const ENDPOINTS = {
   TEST_STEPS: (id: string, versionNo: number) =>
     `${API_CONFIG.API_VERSION}/testcases/${id}/versions/${versionNo}/teststeps/search`,
 
+  /** Test case folder tree endpoint */
+  TEST_CASE_FOLDERS: (projectId: number) =>
+    `${API_CONFIG.API_VERSION}/projects/${projectId}/testcase-folders`,
+
+  /** Test cycle folder tree endpoint */
+  TEST_CYCLE_FOLDERS: (projectId: number) =>
+    `${API_CONFIG.API_VERSION}/projects/${projectId}/testcycle-folders`,
+
   /** Common attributes endpoint (priority, statuses) */
   COMMON_ATTRIBUTES: (projectId: number) =>
     `${API_CONFIG.API_VERSION}/projects/${projectId}/mcp/common-attributes`,
@@ -382,6 +390,22 @@ export const TOOL_NAMES = {
     TITLE: "Get Test Steps",
     SUMMARY:
       "Get test steps for a test case by its key and version. Accepts the human-readable key (e.g. 'SCRUM-TC-145') and resolves it to the internal ID automatically.",
+  },
+
+  /** Get Test Case Folders tool */
+  GET_TEST_CASE_FOLDERS: {
+    TITLE: "Get Test Case Folders",
+    SUMMARY:
+      "Get the test case folder tree of the active QTM4J project, including each folder's numeric folderId. " +
+      "Use it to look up the folderId needed by the test case tools.",
+  },
+
+  /** Get Test Cycle Folders tool */
+  GET_TEST_CYCLE_FOLDERS: {
+    TITLE: "Get Test Cycle Folders",
+    SUMMARY:
+      "Get the test cycle folder tree of the active QTM4J project, including each folder's numeric folderId. " +
+      "Use it to look up the folderId needed by the test cycle tools.",
   },
 
   /** Update Test Case tool */

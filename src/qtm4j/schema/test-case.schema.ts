@@ -39,8 +39,9 @@ export const CreateTestCaseBody = zod.object({
     .positive()
     .optional()
     .describe(
-      "Numeric folder ID where the test case will be created. " +
-        "If omitted, the test case is created in the 'MCP Generated' folder automatically.",
+      "Numeric ID of the folder to place the test case in — never a folder name. " +
+        "Look it up with get_test_case_folders, or get it from the user (right-click the folder in QTM4J → 'Copy Folder Id'). " +
+        "Defaults to the 'MCP Generated' folder when omitted.",
     ),
   priority: zod
     .string()

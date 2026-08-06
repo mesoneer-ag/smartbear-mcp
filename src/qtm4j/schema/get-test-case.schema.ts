@@ -50,7 +50,7 @@ export const SearchTestCaseFilter = zod
       .optional()
       .describe(
         "Numeric folder ID to filter test cases by. " +
-          "Right-click the target folder in QTM4J and select 'Copy Folder Id' to get this value.",
+          "Look it up with get_test_case_folders, or right-click the target folder in QTM4J and select 'Copy Folder Id'.",
       ),
     assignee: zod
       .array(zod.string())
