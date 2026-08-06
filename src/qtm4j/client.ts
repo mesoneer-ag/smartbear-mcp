@@ -190,6 +190,9 @@ export class Qtm4jClient implements Client {
     );
     const { GetTestCases } = await import("./tool/test-case/get-test-cases");
     const { GetTestSteps } = await import("./tool/test-case/get-test-steps");
+    const { GetTestCaseFolders } = await import(
+      "./tool/test-case/get-test-case-folders"
+    );
     const { UpdateTestCase } = await import(
       "./tool/test-case/update-test-case"
     );
@@ -208,6 +211,9 @@ export class Qtm4jClient implements Client {
     );
     const { UpdateTestCycle } = await import(
       "./tool/test-cycle/update-test-cycle"
+    );
+    const { GetTestCycleFolders } = await import(
+      "./tool/test-cycle/get-test-cycle-folders"
     );
 
     const { LinkRequirements } = await import(
@@ -274,10 +280,12 @@ export class Qtm4jClient implements Client {
       new CreateTestCase(this),
       new GetTestCases(this),
       new GetTestSteps(this),
+      new GetTestCaseFolders(this),
       new UpdateTestCase(this),
       new CreateTestCycle(this),
       new SearchTestCycles(this),
       new UpdateTestCycle(this),
+      new GetTestCycleFolders(this),
       new StartExecution(this),
       new UpdateTestCaseExecution(this),
       new UpdateTestStepExecution(this),

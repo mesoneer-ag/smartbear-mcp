@@ -43,8 +43,9 @@ export const CreateTestCycleBody = zod.object({
     .positive()
     .optional()
     .describe(
-      "Numeric folder ID where the test cycle will be created. " +
-        "If omitted, the cycle is created in the 'MCP Generated' folder automatically.",
+      "Numeric ID of the folder to place the test cycle in — never a folder name. " +
+        "Look it up with get_test_cycle_folders, or get it from the user (right-click the folder in QTM4J → 'Copy Folder Id'). " +
+        "Defaults to the 'MCP Generated' folder when omitted.",
     ),
   assignee: zod.string().optional().describe("Assignee account ID"),
   reporter: zod.string().optional().describe("Reporter account ID"),
