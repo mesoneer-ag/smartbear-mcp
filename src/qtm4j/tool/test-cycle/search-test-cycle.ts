@@ -135,7 +135,7 @@ export class SearchTestCycles extends Tool<Qtm4jClient> {
       "FIELDS: Pass as an array to select what to return. plannedStartDate and plannedEndDate are NOT in the default response — include them explicitly. Available: key, summary, description, status, priority, assignee, reporter, isAutomated, plannedStartDate, plannedEndDate, labels, components, fixVersions, sprint, defectCount, estimatedTime, actualTime, created, updated.",
       "REQUEST STRUCTURE: filter → request body; fields, sort, startAt, maxResults → URL query params.",
       "SORT: Allowed fields: key, summary, status, plannedStartDate, plannedEndDate, defectCount. Format: 'fieldName:asc' or 'fieldName:desc' e.g. 'plannedStartDate:asc'.",
-      "FOLDER ID: folderId in fields.testCycle and fields.testCase is a numeric ID. Tell the user they can get it by right-clicking the target folder in QTM4J and selecting 'Copy Folder Id'. Always ask the user for the numeric ID directly — never try to look it up.",
+      "FOLDER ID: filter.folderId is a numeric ID. Resolve a folder the user names in words with get_test_cycle_folders, or ask the user for the ID directly (right-click the target folder in QTM4J → 'Copy Folder Id'). Never guess it.",
     ],
     outputDescription:
       "JSON object with total (matching cycles across all pages), startAt, maxResults, and data (array of test cycle objects for this page). " +
