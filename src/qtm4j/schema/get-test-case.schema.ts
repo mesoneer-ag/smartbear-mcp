@@ -48,7 +48,7 @@ export const SearchTestCaseFilter = zod
       .optional()
       .describe(
         "Folder IDs (numeric, OR logic within array). Example: [123, 456]. " +
-          "Retrieve folder IDs from the project's folder structure.",
+          "Look folder IDs up with get_test_case_folders.",
       ),
     assignee: zod
       .array(zod.string())

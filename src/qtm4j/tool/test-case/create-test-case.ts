@@ -129,8 +129,9 @@ export class CreateTestCase extends Tool<Qtm4jClient> {
       "If priority or status name is not found, the operation proceeds without that field and a warning is returned.",
       "Labels and components are resolved on demand. If a name is not found, it is skipped with a warning.",
       "Steps: ALWAYS include all three fields — stepDetails, testData, and expectedResult. Generate reasonable values if not provided.",
-      "folderId is optional and must be the numeric folder ID — never a folder name. Ask the user for the ID directly " +
-        "(right-click the target folder in QTM4J → 'Copy Folder Id'); never guess it. " +
+      "folderId is optional and must be the numeric folder ID — never a folder name. When the user names a folder in words, " +
+        "resolve it with get_test_case_folders and confirm the match if several folders share that name; alternatively ask the user " +
+        "for the ID directly (right-click the target folder in QTM4J → 'Copy Folder Id'). Never guess it. " +
         "When omitted, the test case is created in the 'MCP Generated' folder.",
       "assignee and reporter accept Jira account IDs.",
     ],

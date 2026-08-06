@@ -104,6 +104,16 @@ The following environment variables configure the QTM4J integration:
 - **Returns**: A paginated list of linked Jira requirements with their key, summary, status, priority, and issue type.
 - **Use case**: Auditing which Jira stories or bugs a test case covers; verifying requirement coverage before a release.
 
+#### Get Test Case Folders
+
+- **Purpose**: Retrieve the test case folder tree of the active QTM4J project, including each folder's numeric folder ID.
+- **Parameters**:
+  - optional sort pattern (`sort`) — format: `field:order`, allowed fields: `NAME`, `CREATED_ON`, `UPDATED_ON`, e.g., `NAME:asc`. Omit to keep the folder order configured in QTM4J.
+  - optional counts flag (`withCount`) — `true` adds `selfCount` (test cases directly in the folder) and `totalCount` (including subfolders) to every folder
+- **Returns**: `total` (number of root-level folders) and `data` (array of root folders). Each folder has `id`, `name`, `seqNo`, `created`, `updated`, and `children` — subfolders of the same shape, nested recursively.
+- **Use case**: Resolving a folder the user names in words (e.g., "the Regression folder") to the numeric `folderId` needed by Create Test Case, the `folders` filter of Search Test Cases, and the folder filters of the link tools.
+- **Note**: Folder names are not unique across the tree — the same name can appear in several branches. When more than one folder matches, the candidates are reported so the right one can be confirmed rather than guessed.
+
 ### Creation Operations
 
 #### Create Test Case
@@ -241,6 +251,16 @@ The following environment variables configure the QTM4J integration:
   - optional max results per page (`maxResults`) — max 100, default 50
 - **Returns**: A paginated list of linked Jira requirements with their key, summary, status, priority, and issue type.
 - **Use case**: Auditing which Jira stories or bugs a test cycle covers; verifying requirement coverage before a release.
+
+#### Get Test Cycle Folders
+
+- **Purpose**: Retrieve the test cycle folder tree of the active QTM4J project, including each folder's numeric folder ID.
+- **Parameters**:
+  - optional sort pattern (`sort`) — format: `field:order`, allowed fields: `NAME`, `CREATED_ON`, `UPDATED_ON`, e.g., `NAME:asc`. Omit to keep the folder order configured in QTM4J.
+  - optional counts flag (`withCount`) — `true` adds `selfCount` (test cycles directly in the folder) and `totalCount` (including subfolders) to every folder
+- **Returns**: `total` (number of root-level folders) and `data` (array of root folders). Each folder has `id`, `name`, `seqNo`, `created`, `updated`, and `children` — subfolders of the same shape, nested recursively.
+- **Use case**: Resolving a folder the user names in words (e.g., "the Sprint 42 folder") to the numeric `folderId` needed by Create Test Cycle and the `folderId` filter of Search Test Cycles.
+- **Note**: Test case folders and test cycle folders are separate trees. Folder names are not unique across a tree, so ambiguous matches are reported rather than guessed.
 
 ### Creation Operations
 

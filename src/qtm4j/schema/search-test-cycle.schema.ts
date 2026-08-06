@@ -59,7 +59,7 @@ export const SearchTestCycleFilter = zod
       .optional()
       .describe(
         "Folder ID to restrict results to (numeric). " +
-          "Right-click a folder in QTM4J and select 'Copy Folder Id'.",
+          "Look it up with get_test_cycle_folders, or right-click a folder in QTM4J and select 'Copy Folder Id'.",
       ),
     labels: zod
       .array(zod.string())
