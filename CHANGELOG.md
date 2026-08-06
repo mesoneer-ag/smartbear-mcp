@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- [QTM4J] New `get_test_case_folders` and `get_test_cycle_folders` tools expose the project's folder trees, so the numeric `folderId` the other QTM4J tools need can be looked up instead of only being supplied by the user. Both accept optional `sort` and `withCount` and take the project from the active project context.
+
 ### Fixed
 
 - [QTM4J] `create_test_case` and `create_test_cycle` no longer discard the caller's `folderId`: a numeric folder ID is now sent to the API as given, so test cases and cycles can be created in a specific folder. Both tools still fall back to the `MCP Generated` folder when `folderId` is omitted, and `create_test_cycle` accepts `folderId` for the first time.
